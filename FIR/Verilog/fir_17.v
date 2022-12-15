@@ -8,60 +8,60 @@ input clk;
 input rst;
 input valid_i;
 input [7:0] data_i;
-output reg signed [7:0] data_o;
+output reg signed [9:0] data_o;
 
 /* FIR-Filter Taps*/
 
 /* Filter 1*/
-reg signed h_0  = 16'b0;       
-reg signed h_1  = 16'b1111010110110001 ;       
-reg signed h_2  = 16'b1111001011111101;       
-reg signed h_3  = 16'b0;      
-reg signed h_4  = 16'b0001101001011011;       
-reg signed h_5  = 16'b0011010011011111;       
-reg signed h_6  = 16'b0100000000000000;       
-reg signed h_7  = 16'b0011010011011111;       
-reg signed h_8  = 16'b0001101001011011;       
-reg signed h_9  = 16'b0;       
-reg signed h_10 = 16'b1111001011111101;      
-reg signed h_11 = 16'b1111010110110001;       
-reg signed h_12 = 16'b0;       
-reg signed h_13 = 16'b0;       
-reg signed h_14 = 16'b0;       
-reg signed h_15 = 16'b0;       
-reg signed h_16 = 16'b0;
+reg signed [15:0] h_0 ; 
+reg signed [15:0] h_1 ;     
+reg signed [15:0] h_2 ;    
+reg signed [15:0] h_3 ; 
+reg signed [15:0] h_4 ;      
+reg signed [15:0] h_5 ;      
+reg signed [15:0] h_6 ;      
+reg signed [15:0] h_7 ;      
+reg signed [15:0] h_8 ;     
+reg signed [15:0] h_9 ; 
+reg signed [15:0] h_10;     
+reg signed [15:0] h_11;     
+reg signed [15:0] h_12; 
+reg signed [15:0] h_13;
+reg signed [15:0] h_14; 
+reg signed [15:0] h_15;
+reg signed [15:0] h_16;
 
 /* Filter 2*/
 /*
-reg signed h_0  = 16'b0;       
-reg signed h_1  = 16'b1111100000000000;       
-reg signed h_2  = 16'b1111001010110011;       
-reg signed h_3  = 16'b1111010010100101;      
-reg signed h_4  = 16'b0;       
-reg signed h_5  = 16'b0001001100011011;       
-reg signed h_6  = 16'b0010100010100101;       
-reg signed h_7  = 16'b0011100110010110;       
-reg signed h_8  = 16'b0100000000000000;       
-reg signed h_9  = 16'b0011100110010110;       
-reg signed h_10 = 16'b0010100010100101;      
-reg signed h_11 = 16'b0001001100011011;       
-reg signed h_12 = 16'b0;       
-reg signed h_13 = 16'b1111010010100101;       
-reg signed h_14 = 16'b1111001010110011;       
-reg signed h_15 = 16'b1111100000000000;       
-reg signed h_16 = 16'b0;  
+16'b0;       
+16'b1111100000000000;       
+16'b1111001010110011;       
+16'b1111010010100101;      
+16'b0;       
+16'b0001001100011011;       
+16'b0010100010100101;       
+16'b0011100110010110;       
+16'b0100000000000000;       
+16'b0011100110010110;       
+16'b0010100010100101;      
+16'b0001001100011011;       
+16'b0;       
+16'b1111010010100101;       
+16'b1111001010110011;       
+16'b1111100000000000;       
+16'b0;  
 */
 
 /*Buffer*/ 
 reg signed [7:0] buff [0:16];
 
 /*Multiply Stage 16-Bit * 8-Bit = 32-Bit*/
-reg signed [24:0] acc [0:16];
-reg signed [24:0] acc_r [0:16];
+reg signed [23:0] acc [0:16];
+reg signed [23:0] acc_r [0:16];
 
 /*Adder Stage*/
-reg signed[24:0] sum;
-reg signed[24:0] sum_r;
+reg signed[23:0] sum;
+reg signed[23:0] sum_r;
 
 /* valid reg */
 reg valid_i_r;
@@ -71,9 +71,9 @@ always @ (posedge clk)
     begin
         if (rst == 1'b1) begin
 
-            valid_i_r <=1'b0;
+            valid_i_r <= 1'b0;
 
-            sum_r     <=1'b0;
+            sum_r     <= 1'b0;
 
             /* reset buffer*/
             buff[0]<= 8'b0;
@@ -115,6 +115,25 @@ always @ (posedge clk)
 
             /* reset output*/
             data_o <= 24'b0; 
+            
+            /* Set Coeffs*/
+            h_0  = 16'b0;       
+            h_1  = 16'b1111010110110001;       
+            h_2  = 16'b1111001011111101;       
+            h_3  = 16'b0;      
+            h_4  = 16'b0001101001011011;       
+            h_5  = 16'b0011010011011111;       
+            h_6  = 16'b0100000000000000;       
+            h_7  = 16'b0011010011011111;       
+            h_8  = 16'b0001101001011011;       
+            h_9  = 16'b0;       
+            h_10 = 16'b1111001011111101;      
+            h_11 = 16'b1111010110110001;       
+            h_12 = 16'b0;       
+            h_13 = 16'b0;       
+            h_14 = 16'b0;       
+            h_15 = 16'b0;       
+            h_16 = 16'b0;
                        
         end
 
@@ -193,7 +212,7 @@ always @ (*)begin
                 /* Accumulate stage of FIR */
                 sum = acc_r[0]  +  acc_r[1]  +  acc_r[2]  +  acc_r[3]  +  acc_r[4]  +  acc_r[5]  +  acc_r[6]  +  acc_r[7]  +  acc_r[8]  +  acc_r[9]  +  acc_r[10] +  acc_r[11] +  acc_r[12] +  acc_r[13] +  acc_r[14] +  acc_r[15] +  acc_r[16];
 
-                data_o = {sum_r[24],sum_r[21:14]};
+                data_o = sum_r[23:14];
 
             end
     end   

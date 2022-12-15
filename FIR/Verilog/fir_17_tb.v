@@ -11,7 +11,7 @@ reg					valid_i;
 
 integer				fd_i, fd_o;
 
-wire signed [7:0]	data_o;
+wire signed [9:0]	data_o;
 				
 fir_17 DUT(
     .clk				(clk),
@@ -33,15 +33,15 @@ initial begin
 
     if (fd_o)     $display("File was opened successfully : %0d", fd_o);
     else      	  $display("File was NOT opened successfully : %0d", fd_o);
-
+	#80
 	clk				=	0;
-	rst				=	1;
 	valid_i			=	0;
 	data_i			=	0;
 	tmp 			= 	0;
-	#40;
+	rst				=	1;
+	#80;
 	rst				=	0;
-	valid_i			=	1;
+	valid_i 		=	1;
 
 end		
 

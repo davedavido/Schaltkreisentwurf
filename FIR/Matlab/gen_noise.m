@@ -11,7 +11,7 @@ x = round(x*20);
 
 %%%% Ausgangssignal Verilog FIR %%%%%%%%%
 y2 = dlmread('/Users/Davidlohner/Documents/Schaltkreisentwurf/FIR/Verilog/fir_o.txt');
-y2 = y2/(2^14);
+%y2 = y2/(2^14);
 
 %%% Rauschsignal in Datei schreiben
 dlmwrite('noisesignal.txt',x,'delimiter','\n');
@@ -58,9 +58,10 @@ y = conv(x,h);
 %%% Spektrum des Filterausgangssignals plotten
 mypsd(y,1024,1,1);
 title('Spektrum Filterausgangssignal');
-
+hold on;
 
 %%%% Spkektrum Verilog FIR %%%%%%%%%
 mypsd(y2,1024,1,1);
 title('Spektrum Verilog FIR')
+hold off;
 
