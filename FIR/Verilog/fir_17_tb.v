@@ -5,13 +5,13 @@ parameter		NVL 	= 10000;		//	Number of Noise Samples
 
 reg					clk;
 reg					rst;
-reg signed [7:0]	data_i, data_from_file;
+reg signed [7:0]	data_i;
 reg 				tmp;
 reg					valid_i;
 
 integer				fd_i, fd_o;
 
-wire signed [23:0]	data_o;
+wire signed [7:0]	data_o;
 				
 fir_17 DUT(
     .clk				(clk),
@@ -38,7 +38,6 @@ initial begin
 	rst				=	1;
 	valid_i			=	0;
 	data_i			=	0;
-	data_from_file 	= 	0;
 	tmp 			= 	0;
 	#40;
 	rst				=	0;
@@ -48,10 +47,9 @@ end
 
 always @ (posedge clk) begin
 	if(valid_i) begin
-		tmp = $fscanf(fd_i, "%d\n", data_from_file);
-		$fwrite(fd_o, "%d\n", data_o);
 		if (!($feof(fd_i))) begin
-			data_i <= data_from_file;
+			tmp = $fscanf(fd_i, "%d\n", data_i);
+			$fwrite(fd_o, "%d\n", data_o);
 		end else begin
 			$fclose(fd_i);
 			$fclose(fd_o);

@@ -8,7 +8,7 @@ input clk;
 input rst;
 input valid_i;
 input [7:0] data_i;
-output reg signed [23:0] data_o;
+output reg signed [7:0] data_o;
 
 /* FIR-Filter Taps*/
 
@@ -51,15 +51,19 @@ reg signed h_14 = 16'b1111001010110011;
 reg signed h_15 = 16'b1111100000000000;       
 reg signed h_16 = 16'b0;  
 */
-//Buffer 
+
+/*Buffer*/ 
 reg signed [7:0] buff [0:16];
 
-//Multiply Stage 16-Bit * 8-Bit = 32-Bit
-reg signed [23:0] acc [0:16];
-reg signed [23:0] acc_r [0:16];
+/*Multiply Stage 16-Bit * 8-Bit = 32-Bit*/
+reg signed [24:0] acc [0:16];
+reg signed [24:0] acc_r [0:16];
 
-reg signed [23:0] data_o_tmp;
+/*Adder Stage*/
+reg signed[24:0] sum;
+reg signed[24:0] sum_r;
 
+/* valid reg */
 reg valid_i_r;
 
 // Update Circular Buffer 
@@ -68,6 +72,8 @@ always @ (posedge clk)
         if (rst == 1'b1) begin
 
             valid_i_r <=1'b0;
+
+            sum_r     <=1'b0;
 
             /* reset buffer*/
             buff[0]<= 8'b0;
@@ -154,6 +160,9 @@ always @ (posedge clk)
             acc_r[14]   <= acc[14];
             acc_r[15]   <= acc[15];
             acc_r[16]   <= acc[16];
+
+            /* Register Sum Output*/
+            sum_r <= sum;
         end
     end
 
@@ -182,9 +191,11 @@ always @ (*)begin
                 acc[16]   = h_16 * buff[16];
 
                 /* Accumulate stage of FIR */
-                data_o = acc_r[0]  +  acc_r[1]  +  acc_r[2]  +  acc_r[3]  +  acc_r[4]  +  acc_r[5]  +  acc_r[6]  +  acc_r[7]  +  acc_r[8]  +  acc_r[9]  +  acc_r[10] +  acc_r[11] +  acc_r[12] +  acc_r[13] +  acc_r[14] +  acc_r[15] +  acc_r[16];
-            end
+                sum = acc_r[0]  +  acc_r[1]  +  acc_r[2]  +  acc_r[3]  +  acc_r[4]  +  acc_r[5]  +  acc_r[6]  +  acc_r[7]  +  acc_r[8]  +  acc_r[9]  +  acc_r[10] +  acc_r[11] +  acc_r[12] +  acc_r[13] +  acc_r[14] +  acc_r[15] +  acc_r[16];
 
+                data_o = {sum_r[24],sum_r[21:14]};
+
+            end
     end   
 
 endmodule
