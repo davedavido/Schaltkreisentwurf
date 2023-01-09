@@ -198,9 +198,8 @@ always @ (*) begin
 			next_state 				= SHIFT1;
 			check_for_termination_o = 1'b1;
 		end
-		
 
-		
+			
 	endcase
 	
 	if(valid_r == 1'b1) begin

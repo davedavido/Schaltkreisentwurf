@@ -217,7 +217,7 @@ assign valid_o	= check_for_termination_i & (wbb == numIterations_r);
 assign eab_o 	= n_r;
 assign wbb 		= alu_c_r;
 assign x_o		= x_0_r;
-assign y_o 		= y_0_r;
+assign y_o 		= y_0_r; //y_temp_r
 assign deg_o 	= phi_sum_r;
 	
 endmodule
