@@ -10,9 +10,10 @@ module controller (
     /* write enable*/
     wren_x1_o,
     wren_x1_n_o, 
+	wren_x1_n_mult_o,
     wren_y_o, 
     wren_n_o, 
-    wren_sigma_n_o
+    wren_sigma_n_o,
     /* register transfer */
     x_to_alu_a_o, 
     y_to_alu_a_o,
@@ -48,7 +49,7 @@ output reg [2:0] mode_o;
 output reg check_for_termination_o;
 
 /* Register Transfer zu Zurückschreiben von Ergebnissen in Register*/
-output reg wren_x1_o, wren_x1_n_o, wren_y_o, wren_n_o, wren_sigma_n_o;
+output reg wren_x1_o, wren_x1_n_o, wren_x1_n_mult_o, wren_y_o, wren_n_o, wren_sigma_n_o;
 
 /* Register Transfer auf die ALU Datenbusse */
 output reg x_to_alu_a_o, y_to_alu_a_o,x1_to_alu_a_o, x1_n_to_alu_b_o, sigma_n_to_alu_o, n_to_alu_a_o;
@@ -80,6 +81,7 @@ always @ (*) begin
     /* register write enable */
     wren_x1_o                   = 1'b0;
     wren_x1_n_o                 = 1'd0;
+	wren_x1_n_mult_o			= 1'd0;
     wren_y_o                    = 1'd0;
     wren_n_o                    = 1'd0;
     wren_sigma_n_o              = 1'd0;
@@ -96,7 +98,7 @@ always @ (*) begin
 
 case(current_state)
     IDLE: begin
-        bussy_o = 1'd0;
+        busy_o = 1'd0;
         if(start_r == 1'b1)begin
         next_state = SUB1;
         end
@@ -118,7 +120,7 @@ case(current_state)
         y_to_alu_a_o    = 1'd1;
         x1_n_to_alu_b_o = 1'd1;
         sigma_n_to_alu_o  = 1'd1;
-        mode_o = ADD_SUB
+        mode_o = ADD_SUB;
         next_state = ADD;
     end
 
@@ -139,7 +141,7 @@ case(current_state)
     end
 
     WB2: begin
-        wren_x1_n_o     = 1'd1;
+        wren_x1_n_mult_o = 1'd1;
         next_state = ENDIT;
     end
 

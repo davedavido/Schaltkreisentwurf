@@ -18,25 +18,24 @@ localparam ALU_IDLE     = 3'd4;
 
 /* Ein- Ausgänge */
 input clk, rst;
-input [7:0] op_a_i, op_b_i;
+input signed [7:0] op_a_i, op_b_i;
 input sigma_n_i;
 input mode_i;
 
-output reg [7:0]res_o;
+output reg signed [15:0]res_o;
 
 /* Intern */
 
-reg [15:0] res_temp_r;
 
 always @ (*) begin
 	
 	case(mode_i)
         ADD_ONE: begin
-            res_o = op_a_i + 8'd1;
+            res_o = op_a_i + 'd1;
         end
 
         SUB_ONE: begin
-            res_o = op_a_i - 8'd1;
+            res_o = op_a_i - 'd1;
         end
 
         ADD_SUB: begin
@@ -44,11 +43,10 @@ always @ (*) begin
         end
 
         MULTIPLY: begin
-                res_temp_r = op_a_i * op_b_i;
-                res_o = res_temp_r >> 4; //Wieder auf 8- bit kürzen
+                res_o = op_a_i * op_b_i;
         end
 
-		default: res_o = 8'd0;
+		default: res_o = 'd0;
 	endcase
 
 end	
