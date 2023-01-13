@@ -3,11 +3,11 @@ module approx_top_tb;
 
 reg				clk, rst;
 reg				start_i;
-reg  	[7:0] 	x_i;
+reg  [15:0] 	x_i;
 reg  	[2:0]	nIt_i;
 
 
-wire 	[7:0] 	y_o;
+wire 	[16:0] 	y_o;
 wire			busy_o, valid_o;
 
 integer				fd_i, fd_o;
@@ -41,20 +41,22 @@ initial begin
 	#20
 	clk		= 0;
 	rst	    = 1;
-	x_i		= 0;
+	x_i		= 16'd0;
 	nIt_i   = 0;
 	start_i = 0;
 	#80
 	rst 		= 0;
 	start_i 	= 1'd1;
-	nIt_i		= 3'd5;
+	nIt_i		= 3'd6;  //Entspricht 5 Iterationen da n bei 1 startet
+	#10
+	start_i = 1'd0;
 
 end
 
 always @ (posedge clk) begin
 
 	if (!($feof(fd_i))) begin
-			x_i = 8'd19;
+			x_i = 'd57344;//'d3277;//'d6554;    //Q4.12 = 0.4
 			#160
 			$fwrite(fd_o, "%d,%d,%d\n", busy_o, valid_o, y_o);
 		end 

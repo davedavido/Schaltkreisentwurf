@@ -1,56 +1,69 @@
 `include "parameter.v"
 
-module scaler(clk, rst, x_i, x_scaled_o, shift_l_o, shift_r_o, no_shift_o);
+module scaler(clk, rst, start_scaler_i, x_i, x_scaled_o, shift_l_o, shift_r_o, done_o);
 
 /* parameters */
-parameter W = 8;//INPUT_BIT_WIDTH;
+parameter W = 16;//INPUT_BIT_WIDTH;
 
 /* i/o ports */
-input clk, rst;
-input [(W-1):0] x_i;
+input clk, rst, start_scaler_i;
+input signed [(W-1):0] x_i;
 output reg signed [(W-1):0] x_scaled_o;
-output reg shift_l_o, shift_r_o, no_shift_o;
+output reg [2:0] shift_l_o, shift_r_o;
+output reg done_o;
 
-/* interne variablen */
-reg [(W-1):0] x_i_r;
+/* Intern */
+reg count_l, count_r;
 
-/* sequentieller block */
 always @ (posedge clk) begin
-
-    if (rst)begin
-        x_i_r       <= 8'b0;
-        x_scaled_o  <= 8'b0;
-        shift_l_o   <= 8'b0;
-        shift_r_o   <= 8'b0;
-        no_shift_o  <= 8'b0;
-
-    end 
-    else begin
-        x_i_r       <= x_i;
-    end
+	if(rst) begin
+		shift_l_o 	<= 'd0;
+		shift_r_o 	<= 'd0;
+		x_scaled_o 	<= 'd0;
+		done_o		<= 'd0;
+		count_l		<= 'd0;
+		count_r		<= 'd0;
+	end
+	else begin
+		if (count_l) begin
+			shift_l_o <= shift_l_o + 'd1;
+		end
+		
+		else if (count_r) begin
+			shift_r_o <= shift_r_o + 'd1;
+		end
+	
+	end
 end
+
 
 /* kombinatorischer block */
 always @(*) begin
 
-    if (x_i_r > 8'b00010100) begin
-        x_scaled_o = x_i_r >>1;
-        shift_r_o = 1'b1;
-        shift_l_o = 1'b0;
-        no_shift_o = 1'b0;
-    end
-    else if(x_i_r < 8'b00001100)begin
-        x_scaled_o = x_i_r <<1;
-        shift_r_o = 1'b0;
-        shift_l_o = 1'b1;
-        no_shift_o = 1'b0;
-    end
-    else begin
-        x_scaled_o = x_i_r;
-        shift_r_o = 1'b0;
-        shift_l_o = 1'b0;
-        no_shift_o = 1'b1;
-    end
+	count_l = 'd0;
+	count_r = 'd0;
+
+	if (start_scaler_i)begin
+	
+		if (x_i > 'd24576) begin  //Upper bound = 1.5
+			x_scaled_o = x_i >>1;
+			shift_l_o = 1'b0;
+			done_o = 1'b0;
+			count_r = 'd1;
+		end
+		else if(x_i < 'd12288)begin // Lower bound = 0.75
+			x_scaled_o = x_i <<1;
+			shift_r_o = 1'b0;
+			done_o = 1'b0;
+			count_l = 'd1;
+		end
+		else begin
+			x_scaled_o = x_i;
+			done_o = 1'b1;
+			count_l = 'd0;
+			count_r = 'd0;
+		end
+	end
 end
 
 endmodule

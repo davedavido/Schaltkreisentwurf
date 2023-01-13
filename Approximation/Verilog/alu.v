@@ -18,11 +18,11 @@ localparam ALU_IDLE     = 3'd4;
 
 /* Ein- Ausgänge */
 input clk, rst;
-input signed [7:0] op_a_i, op_b_i;
+input signed [15:0] op_a_i, op_b_i;
 input sigma_n_i;
-input mode_i;
+input [2:0]mode_i;
 
-output reg signed [15:0]res_o;
+output reg signed [31:0]res_o; //32-Bit Output
 
 /* Intern */
 
@@ -31,11 +31,11 @@ always @ (*) begin
 	
 	case(mode_i)
         ADD_ONE: begin
-            res_o = op_a_i + 'd1;
+            res_o = op_a_i + 'd1;  // Q4.12 -> 1*2^12
         end
 
         SUB_ONE: begin
-            res_o = op_a_i - 'd1;
+            res_o = op_a_i - 16'd16384;
         end
 
         ADD_SUB: begin
