@@ -31,11 +31,11 @@ always @ (*) begin
 	
 	case(mode_i)
         ADD_ONE: begin
-            res_o = op_a_i + 'd1;  // Q4.12 -> 1*2^12
+            res_o = op_a_i + 'd1; 
         end
 
         SUB_ONE: begin
-            res_o = op_a_i - 16'd16384;
+            res_o = op_a_i - 16'd4096; // Q4.12 -> 1*2^12
         end
 
         ADD_SUB: begin

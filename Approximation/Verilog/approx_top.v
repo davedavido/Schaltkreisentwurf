@@ -15,7 +15,7 @@ input					start_i;
 input signed	  [15:0] 	x_i;
 input	  [2:0]			nIt_i;
 
-output wire [16:0] 		y_o;
+output wire [15:0] 		y_o;
 output	  		busy_o, valid_o;
 
 /* Intern */

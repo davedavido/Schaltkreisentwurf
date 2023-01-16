@@ -45,13 +45,13 @@ always @(*) begin
 
 	if (start_scaler_i)begin
 	
-		if (x_i > 'd24576) begin  //Upper bound = 1.5
+		if (x_i > 'd5734) begin  //Upper bound = 1.4
 			x_scaled_o = x_i >>1;
 			shift_l_o = 1'b0;
 			done_o = 1'b0;
 			count_r = 'd1;
 		end
-		else if(x_i < 'd12288)begin // Lower bound = 0.75
+		else if(x_i < 'd2458)begin // Lower bound = 0.6
 			x_scaled_o = x_i <<1;
 			shift_r_o = 1'b0;
 			done_o = 1'b0;

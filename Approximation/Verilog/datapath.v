@@ -48,14 +48,14 @@ input 			shift_y_left_i, shift_y_right_i;
 input           x_to_alu_a_i, y_to_alu_a_i, x1_to_alu_a_i, x1_n_to_alu_b_i, sigma_n_to_alu_i, n_to_alu_a_i, x_to_scaler_i;  
 
 output wire       valid_o, done_o;
-output wire [16:0] y_o;
+output wire [15:0] y_o;
 
 /* Intern */
 reg             	start_r;
 reg [2:0]       	numIterations_r, numIterations_temp;
 reg [2:0]       	n_r, n_temp, numIt_r;
 reg signed [15:0]    x_r, x_temp, x_temp_r; // Eingang Q4.12
-reg [16:0]	y_r, y_temp, y_temp_r; 			// Ausgang Q5.12
+reg [15:0]	y_r, y_temp, y_temp_r; 			// Ausgang Q5.12
 reg             	sigma_n_r, sigma_n_temp;
 reg signed [15:0]   x1_r, x1_temp ; // (x-1) 
 reg signed [15:0]   x1_n_r, x1_n_temp; //(x-1)^2
@@ -165,7 +165,7 @@ always @ (*) begin
         numIterations_temp     = numIt_r;
         n_temp              = 'd1; //Startvorzeichen = - (LSB = 1)
         sigma_n_temp        = 1'd1;  // Vorzeichen = LSB von n
-        y_temp              = 16'd16384; //Startwert y=1
+        y_temp              = 16'd4096; //Startwert y=1
         x1_temp             = 'd0;
         x1_n_temp           = 'd0;
         x_temp              = x_r;
@@ -182,7 +182,7 @@ always @ (*) begin
         x1_temp = wbb[15:0];    	// (x-1)
     end
     if(wren_x1_n_mult_i)begin
-        x1_n_temp = wbb>>14;	// (x-1)^n 
+        x1_n_temp = wbb>>12;	// (x-1)^n 
     end
 	if(wren_x1_n_i)begin
         x1_n_temp = wbb[15:0];	// (x-1)^n  
