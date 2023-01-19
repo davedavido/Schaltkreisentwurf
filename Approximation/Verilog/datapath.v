@@ -8,7 +8,7 @@ module datapath(
     numIt_i,
     mode_i,
 
-    // Write Flags
+    // Write Flags //
     wren_x1_i,
     wren_x1_n_i, 
 	wren_x1_n_mult_i,
@@ -22,7 +22,7 @@ module datapath(
 	shift_y_right_i,
 	
 
-    // Register Transfer
+    // Register Transfer //
     x_to_alu_a_i, 
     y_to_alu_a_i,
     x1_to_alu_a_i, 
