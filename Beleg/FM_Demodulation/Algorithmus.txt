@@ -1,0 +1,22 @@
+-> Auswertung des Imagniärteils aus der Multiplikation von s[k] *s[k-1]*
+
+Mult = (a+bj) * (c+dj) = ac-bd  + (ad+bc)j  -> 4mult 2 Add
+
+K1 = a*(c+d) K2 = d*(a+b) K3 = c*(b-a)
+
+Imaginärteil = K1 + K3 -> 2 mult 3Add
+
+-> Buffer module
+-> Controller: ALU and register Commands
+-> ALU: 
+
+Schritte: 
+
+1.  wren d = -last_in_imag, wren c = last_in_real, wren b= current_in_imag, wren a current_in_real
+2.  calc c+d, store value in cd
+3.  calc b-a, store value in ba
+4.  mult cd,a store value in a_cd_mult
+5.  mult ba,c store value in c_ba_mult
+6.  calc c_ba_mult + a_cd_mult, wren y_o
+
+
